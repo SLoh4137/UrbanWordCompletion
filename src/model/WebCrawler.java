@@ -4,10 +4,10 @@ import java.util.PriorityQueue;
 import tasks.FindWordTask;
 
 public class WebCrawler {
-	public static String getWords(String word) {
+	public static String getWords(String word, int queueSize) {
 		StringBuffer results = new StringBuffer("");
 		PriorityQueue<Node<Integer, String>> similarWords = new PriorityQueue<Node<Integer, String>>();
-		Thread t = new Thread(new FindWordTask(word, similarWords));
+		Thread t = new Thread(new FindWordTask(word, queueSize, similarWords));
 		t.start();
 		try {
 			t.join(0);

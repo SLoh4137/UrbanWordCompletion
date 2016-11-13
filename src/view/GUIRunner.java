@@ -21,31 +21,51 @@ public class GUIRunner extends Application{
 		int verSpaceBetweenNodes = 8, horSpaceBetweenNodes = 8;
 		int paneBorderTop = 20, paneBorderRight = 20;
 		int paneBorderBottom = 20, paneBorderLeft = 20;
-		
+
 		FlowPane fieldsPane = new FlowPane();
 		fieldsPane.setHgap(horSpaceBetweenNodes);
 		fieldsPane.setVgap(verSpaceBetweenNodes);
 		fieldsPane.setPadding(new Insets(paneBorderTop, paneBorderRight, 
-			    paneBorderBottom, paneBorderLeft));
-		
+				paneBorderBottom, paneBorderLeft));
+
 		Label introText = new Label("Welcome to the Urban Dictionary Word Completion"
 				+ "\nThis program will find words similar to the word you enter"
 				+ "\nPlease type a word then click find words");
 		introText.setWrapText(true);
-		
+
+		HBox wordAndLabel = new HBox();
+		Label wordLabel = new Label("Word: ");
 		TextField userField = new TextField();
+		wordAndLabel.getChildren().addAll(wordLabel, userField);
+
+		HBox numAndLabel = new HBox();
+		Label numLabel = new Label("Number of words wanted: ");
+		TextField numField = new TextField();
+		numAndLabel.getChildren().addAll(numLabel, numField);
+
+
 		Button find = new Button("Find Words");
-		
+
 		TextArea results = new TextArea();
 		results.setPrefSize(sceneWidth - paneBorderRight - paneBorderLeft, sceneWidth / 2);
-		
+
 		find.setOnAction(e -> {
 			String word = userField.getText();
-			results.setText(WebCrawler.getWords(word));
+			String num = numField.getText();
+			if(!word.equals("") && !num.equals("")) {
+				try {
+					results.setText(WebCrawler.getWords(word, Integer.parseInt(num)));
+				} catch (NumberFormatException l) {
+					results.setText("Please enter a valid number");
+				}
+			} else {
+				results.setText("Please enter valid values");
+			}
+
 		});
-		
-		fieldsPane.getChildren().addAll(introText, userField,find, results);
-		
+
+		fieldsPane.getChildren().addAll(introText, wordAndLabel, numAndLabel,find, results);
+
 		/* Display the stage */
 		Scene scene = new Scene(fieldsPane, sceneWidth, sceneHeight);
 		primaryStage.setTitle("Urban Dictionary Word Completion");
@@ -53,7 +73,7 @@ public class GUIRunner extends Application{
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
-	
+
 	public static void main(String[] args) {
 		Application.launch(args);
 	}

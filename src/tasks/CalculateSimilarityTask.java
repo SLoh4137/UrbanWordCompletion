@@ -1,7 +1,6 @@
 package tasks;
 
 import java.util.PriorityQueue;
-import java.util.TreeMap;
 
 import model.Levenshtein;
 import model.Node;
@@ -10,13 +9,13 @@ import model.Node;
 public class CalculateSimilarityTask implements Runnable{
 	private String original;
 	private String wordToCompare;
-	//private TreeMap<Integer, String> allWords;
 	private final PriorityQueue<Node<Integer, String>> similarWords;
+	private int queueSize;
 
-
-	public CalculateSimilarityTask(String original, String wordToCompare, PriorityQueue<Node<Integer, String>> similarWords) {
+	public CalculateSimilarityTask(String original, String wordToCompare, int queueSize, PriorityQueue<Node<Integer, String>> similarWords) {
 		this.original = original;
 		this.wordToCompare = wordToCompare;
+		this.queueSize = queueSize;
 		this.similarWords = similarWords;
 	}
 
@@ -29,7 +28,7 @@ public class CalculateSimilarityTask implements Runnable{
 			similarity = Levenshtein.distance(original.toLowerCase(), wordToCompare.toLowerCase());
 		}
 		synchronized(this.similarWords) {
-			if(similarWords.size() < FindWordTask.QUEUE_SIZE) {
+			if(similarWords.size() < queueSize) {
 				similarWords.add(new Node(similarity, wordToCompare));
 			} else if(similarWords.peek().getKey().compareTo(similarity) >= 0) {
 				similarWords.poll();

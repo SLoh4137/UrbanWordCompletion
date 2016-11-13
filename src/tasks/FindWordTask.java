@@ -12,11 +12,12 @@ import model.Node;
 public class FindWordTask implements Runnable{
 	private String urbanDictionary = "https://www.urbandictionary.com/popular.php?character=";
 	private final PriorityQueue<Node<Integer, String>> similarWords;
-	public static final int QUEUE_SIZE = 10;
+	private int queueSize;
 	private String word;
 
-	public FindWordTask(String word, PriorityQueue<Node<Integer, String>> similarWords) {
+	public FindWordTask(String word, int queueSize, PriorityQueue<Node<Integer, String>> similarWords) {
 		this.word = word;
+		this.queueSize = queueSize;
 		this.urbanDictionary += Character.toUpperCase(word.charAt(0));
 		//this.allWords = new TreeMap<Integer, String>();
 		this.similarWords = similarWords;
@@ -49,52 +50,13 @@ public class FindWordTask implements Runnable{
 							currLine.lastIndexOf("<"));
 					//System.out.println(wordToCompare);
 					Thread wordSimilarity = new Thread(
-							new CalculateSimilarityTask(word, wordToCompare, similarWords)); 
+							new CalculateSimilarityTask(word, wordToCompare, queueSize, similarWords)); 
 					wordSimilarity.start();
 
 				}
 			}
 		}
 	}
-
-	public PriorityQueue<Node<Integer, String>> getPriorityQueue() {
-		return similarWords;
-	}
-
-	/*private class CreateCalculateTask implements Runnable {
-		private boolean runTask = true;
-		private Thread[] threads;
-		public CreateCalculateTask() {
-			threads = new Thread[5];
-			for(int i = 0; i < threads.length; i++) {
-				threads[i] = new Thread();
-			}
-		}
-
-		public void stopLoop() {
-			runTask = false;
-		}
-
-		@Override
-		public void run() {
-			while(runTask) {
-
-				if(!queueOfWords.isEmpty()) {
-					String word = queueOfWords.pop();
-					boolean addedToThread = false;
-					while(!addedToThread) {
-						for(int i = 0; i < threads.length; i++) {
-							if(!threads[i].isAlive()) {
-
-							}
-						}
-					}
-				}
-
-			}
-
-		}
-	}*/
 
 }
 
